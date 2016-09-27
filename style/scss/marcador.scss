@@ -1,0 +1,35 @@
+.marcador{
+  text-align: center;
+  &.trs{
+    font-family: $Trs;
+  }
+  &.digital{
+    font-family: $Digital;
+  }
+  &.square{
+    font-family: $Square;
+  }
+  .evento{
+    font-size: 1em;
+  }
+  .nombre{
+    width: 50%;
+    float: left;
+    font-size: 1.5em;
+  }
+  .puntos{
+    width: 50%;
+    float: left;
+    font-size: 5em;
+    &.trs{
+      font-family: $Trs;
+    }
+    &.digital{
+      font-family: $Digital;
+    }
+    &.square{
+      font-family: $Square;
+    }
+  }
+  .informacion{}
+}
