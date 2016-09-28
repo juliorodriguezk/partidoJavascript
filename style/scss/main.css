@@ -21,6 +21,8 @@
 
 .marcador {
   text-align: center;
+  background-color: #000;
+  color: white;
 }
 
 .marcador.trs {
@@ -37,16 +39,20 @@
 
 .marcador .evento {
   font-size: 1em;
+  white-space: nowrap;
 }
 
 .marcador .nombre {
   width: 50%;
   float: left;
   font-size: 1.5em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .marcador .puntos {
-  width: 50%;
+  width: 45%;
   float: left;
   font-size: 5em;
 }
@@ -61,4 +67,9 @@
 
 .marcador .puntos.square {
   font-family: "Square";
+}
+
+.marcador .separador {
+  width: 10%;
+  float: left;
 }

@@ -1,5 +1,7 @@
 .marcador{
   text-align: center;
+  background-color: $FondoPrincipal;
+  color: $TextoPrincipal;
   &.trs{
     font-family: $Trs;
   }
@@ -11,14 +13,18 @@
   }
   .evento{
     font-size: 1em;
+white-space: nowrap;
   }
   .nombre{
     width: 50%;
     float: left;
     font-size: 1.5em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .puntos{
-    width: 50%;
+    width: 45%;
     float: left;
     font-size: 5em;
     &.trs{
@@ -31,5 +37,10 @@
       font-family: $Square;
     }
   }
-  .informacion{}
+  .separador{
+    width: 10%;
+    float: left;
+  }
+  .informacion{
+  }
 }

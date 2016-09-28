@@ -20,8 +20,9 @@ var MiFramework = MiFramework || {};
                 TIEMPO = 5,
                 INFORMACION = 6,
                 MINUTO = 0,
+                MINUTO_ABREVIADO = 1,
                 TEXTO_EVENTOS = ["Gol Local", "Gol Visitante", "Anulado Gol Local", "Anulado Gol Visitante", "Inicio Partido", "Fin Partido", "Descanso Partido", "Reanudación Partido", "Pausa Partido", "Fin Pausa"],
-                TEXTO_MARCADOR = ["Minuto"],
+                TEXTO_MARCADOR = ["Minuto", "Min"],
                 /*Variables y métodos privados*/
                 ESTILOS = ["digital", "square", "trs"],
                 estiloTexto = 1,
@@ -97,7 +98,9 @@ var MiFramework = MiFramework || {};
                             clase = "informacion";
                             break;
                         case (INFORMACION):
-                            informacion = lastEvent !== -1 ? TEXTO_EVENTOS[lastEvent] : null;
+                            informacion = lastEvent !== -1 ? TEXTO_EVENTOS[lastEvent] + " (" + TEXTO_MARCADOR[MINUTO_ABREVIADO] + " " + minutoActual + "'" + ")" : null;
+
+
                             clase = "informacion";
                             break;
                     }
@@ -151,6 +154,7 @@ var MiFramework = MiFramework || {};
                         visitante = document.createElement('div'),
                         puntosLocal = document.createElement('div'),
                         puntosVisitante = document.createElement('div'),
+                        separadorPuntos = document.createElement('div'),
                         informacion = document.createElement('div'),
                         i = 0;
 
@@ -163,6 +167,7 @@ var MiFramework = MiFramework || {};
                     visitante.className = "nombre";
                     puntosLocal.className = "puntos";
                     puntosLocal.classList.add(ESTILOS[estiloPuntos]);
+                    separadorPuntos.className = "separador";
                     puntosVisitante.className = "puntos";
                     puntosVisitante.classList.add(ESTILOS[estiloPuntos]);
                     informacion.className = "informacion";
@@ -171,6 +176,7 @@ var MiFramework = MiFramework || {};
                     nodoHTML.appendChild(local);
                     nodoHTML.appendChild(visitante);
                     nodoHTML.appendChild(puntosLocal);
+                    nodoHTML.appendChild(separadorPuntos);
                     nodoHTML.appendChild(puntosVisitante);
                     nodoHTML.appendChild(informacion);
                     for (i = 0; i < ORDEN_CONTENEDOR.length; i++) {
