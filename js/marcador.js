@@ -10,12 +10,13 @@ var MiFramework = MiFramework || {};
                 INICIO = 4,
                 FIN = 5,
                 DESCANSO = 6,
+                REANUDACION = 7,
                 NOMBRE = 0,
                 PUNTOS = 2,
                 EVENTO = 4,
                 TIEMPO = 5,
                 INFORMACION = 6,
-                TEXTO_EVENTOS = ["Gol Local", "Gol Visitante", "Anulado Gol Local", "Anulado Gol Visitante", "Inicio Partido", "Final de Partido", "Descanso Partido"],
+                TEXTO_EVENTOS = ["Gol Local", "Gol Visitante", "Anulado Gol Local", "Anulado Gol Visitante", "Inicio Partido", "Fin Partido", "Descanso Partido", "Reanudación Partido"],
                 /*Variables y métodos privados*/
                 ESTILOS = ["digital", "square", "trs"],
                 estiloTexto = 1,
@@ -76,6 +77,31 @@ var MiFramework = MiFramework || {};
                         nodoHTML.getElementsByClassName(clase)[ORDEN_CONTENEDOR[contenedor]].innerHTML = informacion;
                     }
                 },
+                tratarEvento = function(evento) {
+                    console.log(evento);
+                    if (evento && evento.detail) {
+                        lastEvent = evento.detail.tipoEvento;
+                        if (evento.detail.equipo) {
+                            lastEvent += evento.detail.equipo;
+                        }
+                        switch (evento.detail.tipoEvento) {
+                            case GOL:
+                                modificaMarcador(evento.detail.equipo, 1);
+                                actualizaVistaMarcador(evento.detail.equipo + PUNTOS);
+                                break;
+                            case ANULADO:
+                                modificaMarcador(evento.detail.equipo, -1);
+                                actualizaVistaMarcador(evento.detail.equipo + PUNTOS);
+                                break;
+                            case INICIO:
+                            case FIN:
+                            case REANUDACION:
+                            case DESCANSO:
+                                break;
+                        }
+                        actualizaVistaMarcador(INFORMACION);
+                    }
+                },
                 crearNodo = function() {
                     var evento = document.createElement('div'),
                         tiempo = document.createElement('div'),
@@ -108,7 +134,12 @@ var MiFramework = MiFramework || {};
                     for (i = 0; i < ORDEN_CONTENEDOR.length; i++) {
                         actualizaVistaMarcador(i);
                     }
-                    console.log(nodoHTML);
+                    /* Activamos la escucha de eventos */
+                    nodoHTML.addEventListener('puntoPartido', tratarEvento, false);
+                    nodoHTML.addEventListener('inicioPartido', tratarEvento, false);
+                    nodoHTML.addEventListener('finPartido', tratarEvento, false);
+                    nodoHTML.addEventListener('descansoPartido', tratarEvento, false);
+                    nodoHTML.addEventListener('reanudaPartido', tratarEvento, false);
                 };
 
             crearNodo();
@@ -118,6 +149,12 @@ var MiFramework = MiFramework || {};
 
             this.LOCAL = LOCAL;
             this.VISITANTE = VISITANTE;
+            this.GOL = GOL;
+            this.ANULADO = ANULADO;
+            this.INICIO = INICIO;
+            this.FIN = FIN;
+            this.DESCANSO = DESCANSO;
+            this.REANUDACION = REANUDACION;
 
             /*Variables y Métodos públicos*/
             this.inicioPartido = function() {
