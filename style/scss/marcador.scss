@@ -12,11 +12,11 @@
     font-family: $Square;
   }
   .evento{
-    font-size: 1em;
-white-space: nowrap;
+    font-size: 1.5em;
+    white-space: nowrap;
   }
   .nombre{
-    width: 50%;
+    width: 45%;
     float: left;
     font-size: 1.5em;
     white-space: nowrap;
@@ -25,6 +25,26 @@ white-space: nowrap;
   }
   .puntos{
     width: 45%;
+    float: left;
+    font-size: 5em;
+    color:$PuntosMarcador;
+    &.trs{
+      font-family: $Trs;
+    }
+    &.digital{
+      font-family: $Digital;
+    }
+    &.square{
+      font-family: $Square;
+    }
+  }
+  .separadorNombre{
+    width: 10%;
+    float: left;
+    height: 0.1em;
+  }
+  .separador{
+    width: 10%;
     float: left;
     font-size: 5em;
     &.trs{
@@ -37,10 +57,10 @@ white-space: nowrap;
       font-family: $Square;
     }
   }
-  .separador{
-    width: 10%;
-    float: left;
-  }
+  .separador:before {
+   content: "-";
+}
   .informacion{
+    font-size: 1.25em;
   }
 }

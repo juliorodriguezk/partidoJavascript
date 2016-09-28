@@ -38,12 +38,12 @@
 }
 
 .marcador .evento {
-  font-size: 1em;
+  font-size: 1.5em;
   white-space: nowrap;
 }
 
 .marcador .nombre {
-  width: 50%;
+  width: 45%;
   float: left;
   font-size: 1.5em;
   white-space: nowrap;
@@ -55,6 +55,7 @@
   width: 45%;
   float: left;
   font-size: 5em;
+  color: #dfdf20;
 }
 
 .marcador .puntos.trs {
@@ -69,7 +70,34 @@
   font-family: "Square";
 }
 
+.marcador .separadorNombre {
+  width: 10%;
+  float: left;
+  height: 0.1em;
+}
+
 .marcador .separador {
   width: 10%;
   float: left;
+  font-size: 5em;
+}
+
+.marcador .separador.trs {
+  font-family: "Trs";
+}
+
+.marcador .separador.digital {
+  font-family: "Digital";
+}
+
+.marcador .separador.square {
+  font-family: "Square";
+}
+
+.marcador .separador:before {
+  content: "-";
+}
+
+.marcador .informacion {
+  font-size: 1.25em;
 }

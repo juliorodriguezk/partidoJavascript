@@ -26,7 +26,7 @@ var MiFramework = MiFramework || {};
                 /*Variables y métodos privados*/
                 ESTILOS = ["digital", "square", "trs"],
                 estiloTexto = 1,
-                estiloPuntos = 0,
+                estiloPuntos = 2,
                 ORDEN_CONTENEDOR = [0, 1, 0, 1, 0, 0, 1],
                 nodoHTML = null,
                 nombreLocal = typeof local === "string" ? local : "",
@@ -152,6 +152,7 @@ var MiFramework = MiFramework || {};
                         tiempo = document.createElement('div'),
                         local = document.createElement('div'),
                         visitante = document.createElement('div'),
+                        separadorNombre = document.createElement('div'),
                         puntosLocal = document.createElement('div'),
                         puntosVisitante = document.createElement('div'),
                         separadorPuntos = document.createElement('div'),
@@ -168,12 +169,15 @@ var MiFramework = MiFramework || {};
                     puntosLocal.className = "puntos";
                     puntosLocal.classList.add(ESTILOS[estiloPuntos]);
                     separadorPuntos.className = "separador";
+                    separadorPuntos.classList.add(ESTILOS[estiloPuntos]);
+                    separadorNombre.className = "separadorNombre";
                     puntosVisitante.className = "puntos";
                     puntosVisitante.classList.add(ESTILOS[estiloPuntos]);
                     informacion.className = "informacion";
                     nodoHTML.appendChild(evento);
                     nodoHTML.appendChild(tiempo);
                     nodoHTML.appendChild(local);
+                    nodoHTML.appendChild(separadorNombre);
                     nodoHTML.appendChild(visitante);
                     nodoHTML.appendChild(puntosLocal);
                     nodoHTML.appendChild(separadorPuntos);
