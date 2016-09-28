@@ -1,9 +1,10 @@
 var MiFramework = MiFramework || {};
 (
     function(scope) {
-        scope.Marcador = function Marcador(local, visitante, evento) {
+        scope.Marcador = function Marcador(local, visitante, evento, duracionParte, partes) {
 
-            var LOCAL = 0,
+            var MINUTO_MS_SIMUL = 1000,
+                LOCAL = 0,
                 VISITANTE = 1,
                 GOL = 0,
                 ANULADO = 2,
@@ -11,12 +12,16 @@ var MiFramework = MiFramework || {};
                 FIN = 5,
                 DESCANSO = 6,
                 REANUDACION = 7,
+                PARA = 8,
+                CONTINUA = 9,
                 NOMBRE = 0,
                 PUNTOS = 2,
                 EVENTO = 4,
                 TIEMPO = 5,
                 INFORMACION = 6,
-                TEXTO_EVENTOS = ["Gol Local", "Gol Visitante", "Anulado Gol Local", "Anulado Gol Visitante", "Inicio Partido", "Fin Partido", "Descanso Partido", "Reanudación Partido"],
+                MINUTO = 0,
+                TEXTO_EVENTOS = ["Gol Local", "Gol Visitante", "Anulado Gol Local", "Anulado Gol Visitante", "Inicio Partido", "Fin Partido", "Descanso Partido", "Reanudación Partido", "Pausa Partido", "Fin Pausa"],
+                TEXTO_MARCADOR = ["Minuto"],
                 /*Variables y métodos privados*/
                 ESTILOS = ["digital", "square", "trs"],
                 estiloTexto = 1,
@@ -29,6 +34,29 @@ var MiFramework = MiFramework || {};
                 puntosLocal = 0,
                 puntosVisitante = 0,
                 lastEvent = -1,
+                minutoActual = 0,
+                parteActual = 0,
+                actualizadorReloj = null,
+                actualizaParte = function() {
+                    parteActual++;
+                },
+                actualizaReloj = function() {
+                    minutoActual++;
+                    actualizaVistaMarcador(TIEMPO);
+                },
+                paraReloj = function() {
+                    actualizaReloj();
+                    if (actualizadorReloj) {
+                        clearInterval(actualizadorReloj);
+                    }
+                    actualizadorReloj = null;
+                },
+                iniciaReloj = function() {
+                    if (actualizadorReloj) {
+                        paraReloj();
+                    }
+                    actualizadorReloj = setInterval(actualizaReloj, MINUTO_MS_SIMUL);
+                },
                 modificaMarcador = function(quien, cuanto) {
                     if (quien === LOCAL) {
                         puntosLocal += cuanto;
@@ -63,9 +91,9 @@ var MiFramework = MiFramework || {};
                         case (EVENTO):
                             informacion = nombreEvento;
                             clase = "evento";
-
                             break;
                         case (TIEMPO):
+                            informacion = TEXTO_MARCADOR[MINUTO] + " " + minutoActual + "'";
                             clase = "informacion";
                             break;
                         case (INFORMACION):
@@ -78,7 +106,6 @@ var MiFramework = MiFramework || {};
                     }
                 },
                 tratarEvento = function(evento) {
-                    console.log(evento);
                     if (evento && evento.detail) {
                         lastEvent = evento.detail.tipoEvento;
                         if (evento.detail.equipo) {
@@ -94,9 +121,24 @@ var MiFramework = MiFramework || {};
                                 actualizaVistaMarcador(evento.detail.equipo + PUNTOS);
                                 break;
                             case INICIO:
+                                actualizaParte();
+                                iniciaReloj();
+                                break;
                             case FIN:
+                                paraReloj();
+                                break;
                             case REANUDACION:
+                                actualizaParte();
+                                iniciaReloj();
+                                break;
                             case DESCANSO:
+                                paraReloj();
+                                break;
+                            case PAUSA:
+                                paraReloj();
+                                break;
+                            case CONTINUA:
+                                iniciaReloj();
                                 break;
                         }
                         actualizaVistaMarcador(INFORMACION);
@@ -140,6 +182,9 @@ var MiFramework = MiFramework || {};
                     nodoHTML.addEventListener('finPartido', tratarEvento, false);
                     nodoHTML.addEventListener('descansoPartido', tratarEvento, false);
                     nodoHTML.addEventListener('reanudaPartido', tratarEvento, false);
+                    nodoHTML.addEventListener('paraPartido', tratarEvento, false);
+                    nodoHTML.addEventListener('continuaPartido', tratarEvento, false);
+
                 };
 
             crearNodo();
@@ -157,36 +202,78 @@ var MiFramework = MiFramework || {};
             this.REANUDACION = REANUDACION;
 
             /*Variables y Métodos públicos*/
-            this.inicioPartido = function() {
-                lastEvent = INICIO;
+            this.inicio = function() {
+                var event = new CustomEvent('inicioPartido', {
+                    'detail': {
+                        'tipoEvento': INICIO
+                    }
+                });
+                nodoHTML.dispatchEvent(event);
             };
-            this.finPartido = function() {
-                lastEvent = FIN;
+
+            this.fin = function() {
+                var event = new CustomEvent('finPartido', {
+                    'detail': {
+                        'tipoEvento': FIN
+                    }
+                });
+                nodoHTML.dispatchEvent(event);
             };
-            this.golLocal = function() {
-                modificaMarcador(LOCAL, 1);
-                lastEvent = GOL + LOCAL;
-                actualizaVistaMarcador(LOCAL + PUNTOS);
-                actualizaVistaMarcador(INFORMACION);
+            this.descanso = function() {
+                var event = new CustomEvent('descansoPartido', {
+                    'detail': {
+                        'tipoEvento': DESCANSO
+                    }
+                });
+                nodoHTML.dispatchEvent(event);
             };
-            this.golVisitante = function() {
-                modificaMarcador(VISITANTE, 1);
-                lastEvent = GOL + VISITANTE;
-                actualizaVistaMarcador(VISITANTE + PUNTOS);
-                actualizaVistaMarcador(INFORMACION);
+            this.reanuda = function() {
+                var event = new CustomEvent('reanudaPartido', {
+                    'detail': {
+                        'tipoEvento': REANUDACION
+                    }
+                });
+                nodoHTML.dispatchEvent(event);
             };
-            this.anuladoLocal = function() {
-                modificaMarcador(LOCAL, -1);
-                lastEvent = ANULADO + LOCAL;
+            this.para = function() {
+                var event = new CustomEvent('paraPartido', {
+                    'detail': {
+                        'tipoEvento': PARA
+                    }
+                });
+                nodoHTML.dispatchEvent(event);
             };
-            this.anuladoVisitante = function() {
-                modificaMarcador(VISITANTE, -1);
-                lastEvent = ANULADO + VISITANTE;
+            this.continua = function() {
+                var event = new CustomEvent('continuaPartido', {
+                    'detail': {
+                        'tipoEvento': CONTINUA
+                    }
+                });
+                nodoHTML.dispatchEvent(event);
             };
+            this.punto = function(equipo) {
+                var event = new CustomEvent('puntoPartido', {
+                    'detail': {
+                        'tipoEvento': GOL,
+                        'equipo': equipo
+                    }
+                });
+                nodoHTML.dispatchEvent(event);
+            };
+            this.anulado = function(equipo) {
+                var event = new CustomEvent('puntoPartido', {
+                    'detail': {
+                        'tipoEvento': ANULADO,
+                        'equipo': equipo
+                    }
+                });
+                nodoHTML.dispatchEvent(event);
+            };
+
             this.reset = function() {
                 modificaMarcador();
             };
-            this.consultarGoles = function(equipo) {
+            this.consultarPuntos = function(equipo) {
                 var objResultado;
                 if (equipo === LOCAL) {
                     return puntosLocal;
