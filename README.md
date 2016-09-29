@@ -1,2 +1,2 @@
 # partidoJavascript
-Implementación de un marcadorpara gestionar eventos deportivos usando JS
+Implementación de un marcador para gestionar eventos deportivos usando JS
